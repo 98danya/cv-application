@@ -1,100 +1,105 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/styles.css";
 
-function GeneralInfo() {
-  const [editMode, setEditMode] = useState(true);
-  const [info, setInfo] = useState({
-    firstName: "",
-    lastName: "",
-    location: "",
-    email: "",
-    phone: "",
-    aboutYou: "",
-  });
+function GeneralInfo({ generalInfo, updateGeneralInfo }) {
+  const [info, setInfo] = useState(generalInfo);
+
+  useEffect(() => {
+    setInfo(generalInfo);
+  }, [generalInfo]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setInfo({ ...info, [name]: value });
+    const updatedInfo = { ...info, [name]: value };
+    setInfo(updatedInfo);
+    updateGeneralInfo(updatedInfo);
+  };
+
+  const clearAll = () => {
+    const clearedInfo = {
+      firstName: "",
+      lastName: "",
+      location: "",
+      email: "",
+      phone: "",
+      aboutYou: "",
+    };
+    setInfo(clearedInfo);
+    updateGeneralInfo(clearedInfo);
   };
 
   return (
     <div className="form-container">
-      {/* Form Section */}
-      <div className="form-section">
-        {editMode && (
-          <form className="form-content">
-            <h2>General Information</h2>
-            <input
-              type="text"
-              name="firstName"
-              value={info.firstName}
-              placeholder="First Name"
-              onChange={handleChange}
-            />
-            <input
-              type="text"
-              name="lastName"
-              value={info.lastName}
-              placeholder="Last Name"
-              onChange={handleChange}
-            />
-            <input
-              type="text"
-              name="location"
-              value={info.location}
-              placeholder="Location"
-              onChange={handleChange}
-            />
-            <input
-              type="email"
-              name="email"
-              value={info.email}
-              placeholder="Email"
-              onChange={handleChange}
-            />
-            <input
-              type="tel"
-              name="phone"
-              value={info.phone}
-              placeholder="Phone"
-              onChange={handleChange}
-            />
-            <input
-              type="text"
-              name="aboutYou"
-              value={info.aboutYou}
-              placeholder="Write about yourself"
-              onChange={handleChange}
-            />
-            <button type="button" onClick={() => setEditMode(false)}>
-              Submit
-            </button>
-          </form>
-        )}
+      <h2>General Information</h2>
+
+      <div className="form-field">
+        <label>First Name</label>
+        <input
+          type="text"
+          name="firstName"
+          value={info.firstName}
+          placeholder="First Name"
+          onChange={handleChange}
+        />
       </div>
 
-      {/* Preview Section */}
-      <div className="preview-section">
-        <p>
-          <strong>First Name:</strong> {info.firstName || ""}
-        </p>
-        <p>
-          <strong>Last Name:</strong> {info.lastName || ""}
-        </p>
-        <p>
-          <strong>Location:</strong> {info.location || ""}
-        </p>
-        <p>
-          <strong>Email:</strong> {info.email || ""}
-        </p>
-        <p>
-          <strong>Phone:</strong> {info.phone || ""}
-        </p>
-        <p>
-          <strong>About Me:</strong> {info.aboutYou || ""}
-        </p>
-        {!editMode && <button onClick={() => setEditMode(true)}>Edit</button>}
+      <div className="form-field">
+        <label>Last Name</label>
+        <input
+          type="text"
+          name="lastName"
+          value={info.lastName}
+          placeholder="Last Name"
+          onChange={handleChange}
+        />
       </div>
+
+      <div className="form-field">
+        <label>Location</label>
+        <input
+          type="text"
+          name="location"
+          value={info.location}
+          placeholder="Location"
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="form-field">
+        <label>Email</label>
+        <input
+          type="email"
+          name="email"
+          value={info.email}
+          placeholder="Email"
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="form-field">
+        <label>Phone</label>
+        <input
+          type="tel"
+          name="phone"
+          value={info.phone}
+          placeholder="Phone"
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="form-field">
+        <label>About You</label>
+        <textarea
+          name="aboutYou"
+          value={info.aboutYou}
+          placeholder="Write about yourself"
+          onChange={handleChange}
+        />
+      </div>
+
+      <button type="button" onClick={clearAll}>
+        Clear All
+      </button>
     </div>
   );
 }

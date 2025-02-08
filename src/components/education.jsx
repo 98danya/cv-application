@@ -1,87 +1,82 @@
 import React, { useState } from "react";
-import "../styles/styles.css"; // Import the shared CSS file
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-function Education() {
-  const [editMode, setEditMode] = useState(true);
-  const [info, setInfo] = useState({
-    titleOfStudy: "",
-    schoolName: "",
-    startDate: "",
-    endDate: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInfo({ ...info, [name]: value });
+function Education({ educationList, updateEducationList }) {
+  const handleAddEducation = () => {
+    const newEducation = { titleOfStudy: "", schoolName: "", startDate: null, endDate: null };
+    updateEducationList([...educationList, newEducation]);
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const [year, month] = dateString.split("-");
-    return `${new Date(year, month - 1).toLocaleString("en-US", {
-      year: "numeric",
-      month: "long",
-    })}`;
+  const handleChange = (index, event) => {
+    const { name, value } = event.target;
+    const updatedList = [...educationList];
+    updatedList[index][name] = value;
+    updateEducationList(updatedList);
+  };
+
+  const handleDateChange = (index, field, date) => {
+    const updatedList = [...educationList];
+    updatedList[index][field] = date;
+    updateEducationList(updatedList);
+  };
+
+  const handleDelete = (index) => {
+    updateEducationList(educationList.filter((_, i) => i !== index));
   };
 
   return (
     <div className="form-container">
-      {/* Form Section */}
-      <div className="form-section">
-        {editMode && (
-          <form className="form-content">
-            <h2>Education</h2>
+      <button onClick={handleAddEducation}>Add Education</button>
+      {educationList.map((education, index) => (
+        <div key={index} className="education-entry">
+          <div className="form-field">
+            <label>Title Of Study</label>
             <input
               type="text"
               name="titleOfStudy"
-              value={info.titleOfStudy}
+              value={education.titleOfStudy}
               placeholder="Title Of Study"
-              onChange={handleChange}
+              onChange={(e) => handleChange(index, e)}
             />
+          </div>
+
+          <div className="form-field">
+            <label>School Name</label>
             <input
               type="text"
               name="schoolName"
-              value={info.schoolName}
+              value={education.schoolName}
               placeholder="School Name"
-              onChange={handleChange}
+              onChange={(e) => handleChange(index, e)}
             />
-            <input
-              type="month"
-              name="startDate"
-              value={info.startDate}
-              placeholder="Start Date"
-              onChange={handleChange}
-            />
-            <input
-              type="month"
-              name="endDate"
-              value={info.endDate}
-              placeholder="End Date"
-              onChange={handleChange}
-            />
-            <button type="button" onClick={() => setEditMode(false)}>
-              Submit
-            </button>
-          </form>
-        )}
-      </div>
+          </div>
 
-      {/* Live Preview */}
-      <div className="preview-section">
-        <p>
-          <strong>Title Of Study:</strong> {info.titleOfStudy || ""}
-        </p>
-        <p>
-          <strong>School Name:</strong> {info.schoolName || ""}
-        </p>
-        <p>
-          <strong>Start Date:</strong> {formatDate(info.startDate)}
-        </p>
-        <p>
-          <strong>End Date:</strong> {formatDate(info.endDate)}
-        </p>
-        {!editMode && <button onClick={() => setEditMode(true)}>Edit</button>}
-      </div>
+          <div className="form-field">
+            <label>Start</label>
+            <DatePicker
+              selected={education.startDate}
+              onChange={(date) => handleDateChange(index, "startDate", date)}
+              showYearPicker
+              dateFormat="yyyy"
+              placeholderText="Start Year"
+            />
+          </div>
+
+          <div className="form-field">
+            <label>End</label>
+            <DatePicker
+              selected={education.endDate}
+              onChange={(date) => handleDateChange(index, "endDate", date)}
+              showYearPicker
+              dateFormat="yyyy"
+              placeholderText="End Year"
+            />
+          </div>
+
+          <button className="delete-btn" onClick={() => handleDelete(index)}>Delete</button>
+        </div>
+      ))}
     </div>
   );
 }

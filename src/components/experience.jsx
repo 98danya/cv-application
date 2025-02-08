@@ -1,98 +1,93 @@
 import React, { useState } from "react";
-import "../styles/styles.css"; // Import the shared CSS file
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-function WorkExperience() {
-  const [editMode, setEditMode] = useState(true);
-  const [info, setInfo] = useState({
-    position: "",
-    companyName: "",
-    startDate: "",
-    endDate: "",
-    jobDescription: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInfo({ ...info, [name]: value });
+function WorkExperience({ workList, updateWorkList }) {
+  const handleAddWorkExperience = () => {
+    const newWork = { position: "", companyName: "", startDate: null, endDate: null, jobDescription: "" };
+    updateWorkList([...workList, newWork]);
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const [year, month] = dateString.split("-");
-    return `${new Date(year, month - 1).toLocaleString("en-US", {
-      year: "numeric",
-      month: "long",
-    })}`;
+  const handleChange = (index, event) => {
+    const { name, value } = event.target;
+    const updatedList = [...workList];
+    updatedList[index][name] = value;
+    updateWorkList(updatedList);
+  };
+
+  const handleDateChange = (index, field, date) => {
+    const updatedList = [...workList];
+    updatedList[index][field] = date;
+    updateWorkList(updatedList);
+  };
+
+  const handleDelete = (index) => {
+    updateWorkList(workList.filter((_, i) => i !== index));
   };
 
   return (
     <div className="form-container">
-      {/* Form Section */}
-      <div className="form-section">
-        {editMode && (
-          <form className="form-content">
-            <h2>Work Experience</h2>
+      <button onClick={handleAddWorkExperience}>Add Work Experience</button>
+      {workList.map((work, index) => (
+        <div key={index} className="work-entry">
+          <div className="form-field">
+            <label>Position</label>
             <input
               type="text"
               name="position"
-              value={info.position}
+              value={work.position}
               placeholder="Position"
-              onChange={handleChange}
+              onChange={(e) => handleChange(index, e)}
             />
+          </div>
+
+          <div className="form-field">
+            <label>Company Name</label>
             <input
               type="text"
               name="companyName"
-              value={info.companyName}
+              value={work.companyName}
               placeholder="Company Name"
-              onChange={handleChange}
+              onChange={(e) => handleChange(index, e)}
             />
-            <input
-              type="month"
-              name="startDate"
-              value={info.startDate}
-              placeholder="Start Date"
-              onChange={handleChange}
+          </div>
+
+          <div className="form-field">
+            <label>Start</label>
+            <DatePicker
+              selected={work.startDate}
+              onChange={(date) => handleDateChange(index, "startDate", date)}
+              showYearPicker
+              dateFormat="yyyy"
+              placeholderText="Start Year"
             />
-            <input
-              type="month"
-              name="endDate"
-              value={info.endDate}
-              placeholder="End Date"
-              onChange={handleChange}
+          </div>
+
+          <div className="form-field">
+            <label>End</label>
+            <DatePicker
+              selected={work.endDate}
+              onChange={(date) => handleDateChange(index, "endDate", date)}
+              showYearPicker
+              dateFormat="yyyy"
+              placeholderText="End Year"
             />
+          </div>
+
+          <div className="form-field">
+            <label>Job Description</label>
             <input
               type="text"
               name="jobDescription"
-              value={info.jobDescription}
+              value={work.jobDescription}
               placeholder="Describe Your Tasks"
-              onChange={handleChange}
+              onChange={(e) => handleChange(index, e)}
             />
-            <button type="button" onClick={() => setEditMode(false)}>
-              Submit
-            </button>
-          </form>
-        )}
-      </div>
+          </div>
 
-      {/* Live Preview */}
-      <div className="preview-section">
-        <p>
-          <strong>Position:</strong> {info.position || ""}
-        </p>
-        <p>
-          <strong>Company Name:</strong> {info.companyName || ""}
-        </p>
-        <p>
-          <strong>Start Date:</strong> {formatDate(info.startDate)}
-        </p>
-        <p>
-          <strong>End Date:</strong> {formatDate(info.endDate)}
-        </p>
-        <p>
-          <strong>Task Description:</strong> {info.jobDescription || ""}
-        </p>
-        {!editMode && <button onClick={() => setEditMode(true)}>Edit</button>}
-      </div>
+          <button className="delete-btn" onClick={() => handleDelete(index)}>Delete</button>
+        </div>
+      ))}
     </div>
   );
 }
