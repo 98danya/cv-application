@@ -4,7 +4,13 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function WorkExperience({ workList, updateWorkList }) {
   const handleAddWorkExperience = () => {
-    const newWork = { position: "", companyName: "", startDate: null, endDate: null, jobDescription: "" };
+    const newWork = {
+      position: "",
+      companyName: "",
+      startDate: null,
+      endDate: null,
+      jobDescription: "",
+    };
     updateWorkList([...workList, newWork]);
   };
 
@@ -27,7 +33,9 @@ function WorkExperience({ workList, updateWorkList }) {
 
   return (
     <div className="form-container">
-      <button onClick={handleAddWorkExperience}>Add Work Experience</button>
+      <button className="button-container" onClick={handleAddWorkExperience}>
+        Add Work Experience
+      </button>
       {workList.map((work, index) => (
         <div key={index} className="work-entry">
           <div className="form-field">
@@ -85,7 +93,12 @@ function WorkExperience({ workList, updateWorkList }) {
             />
           </div>
 
-          <button className="delete-btn" onClick={() => handleDelete(index)}>Delete</button>
+          <button
+            className="button-container"
+            onClick={() => handleDelete(index)}
+          >
+            Delete
+          </button>
         </div>
       ))}
     </div>

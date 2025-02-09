@@ -3,6 +3,7 @@ import { GeneralInfo } from "./general";
 import { Education } from "./education";
 import { WorkExperience } from "./experience";
 import "../styles/styles.css";
+import { jsPDF } from "jspdf";
 
 function CVPage() {
   const [generalInfo, setGeneralInfo] = useState({
@@ -56,33 +57,169 @@ function CVPage() {
   const updateEducationList = (list) => setEducationList(list);
   const updateWorkList = (list) => setWorkList(list);
 
+  function downloadPDF() {
+    const doc = new jsPDF();
+    let yPosition = 10;
+    const pageWidth = doc.internal.pageSize.width;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text(`${generalInfo.firstName} ${generalInfo.lastName}`, 10, yPosition);
+    yPosition += 10;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text(generalInfo.location, 10, yPosition);
+
+    const rightX = pageWidth - 90;
+
+    doc.setFont("helvetica", "normal");
+    let contactInfo = "";
+
+    if (generalInfo.email) {
+      contactInfo += generalInfo.email;
+    }
+
+    if (generalInfo.email && generalInfo.phone) {
+      contactInfo += " • ";
+    }
+
+    if (generalInfo.phone) {
+      contactInfo += generalInfo.phone;
+    }
+
+    doc.text(contactInfo, rightX, yPosition);
+    yPosition += 10;
+
+    const aboutYouLines = doc.splitTextToSize(generalInfo.aboutYou, 180);
+    doc.text(aboutYouLines, 10, yPosition);
+    yPosition += aboutYouLines.length * 6;
+
+    if (educationList.length > 0) {
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("Education", 10, yPosition);
+      yPosition += 10;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      educationList.forEach((edu, index) => {
+        if (yPosition > 270) {
+          doc.addPage();
+          yPosition = 10;
+        }
+
+        const rightX = pageWidth - 50;
+
+        doc.setFont("helvetica", "bold");
+        doc.text(edu.titleOfStudy, 10, yPosition);
+        doc.setFont("helvetica", "normal");
+        doc.text(edu.schoolName, rightX, yPosition);
+
+        yPosition += 10;
+
+        const startYear = edu.startDate
+          ? new Date(edu.startDate).getFullYear()
+          : "";
+        const endYear = edu.endDate ? new Date(edu.endDate).getFullYear() : "";
+        doc.text(`${startYear} - ${endYear}`, 10, yPosition);
+        yPosition += 10;
+      });
+    }
+
+    if (workList.length > 0) {
+      if (yPosition > 270) {
+        doc.addPage();
+        yPosition = 10;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("Work Experience", 10, yPosition);
+      yPosition += 10;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+
+      workList.forEach((work, index) => {
+        if (yPosition > 270) {
+          doc.addPage();
+          yPosition = 10;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.text(`${work.position} at ${work.companyName}`, 10, yPosition);
+        yPosition += 10;
+
+        doc.setFont("helvetica", "normal");
+        const workStartYear = work.startDate
+          ? new Date(work.startDate).getFullYear()
+          : "";
+        const workEndYear = work.endDate
+          ? new Date(work.endDate).getFullYear()
+          : "";
+        doc.text(`${workStartYear} - ${workEndYear}`, 10, yPosition);
+        yPosition += 10;
+
+        const jobDescriptionLines = doc.splitTextToSize(
+          work.jobDescription,
+          180
+        );
+        doc.text(jobDescriptionLines, 10, yPosition);
+        yPosition += jobDescriptionLines.length * 8;
+      });
+    }
+
+    doc.save("CV.pdf");
+  }
+
   return (
     <div className="cv-page">
-      <div className="form-section">
-        <GeneralInfo generalInfo={generalInfo} updateGeneralInfo={updateGeneralInfo} />
+      <div className="left-section">
+        <div className="form-container">
+          <div className="form-section">
+            <h1 className="cv-heading">CV Generator</h1>
+            <GeneralInfo
+              generalInfo={generalInfo}
+              updateGeneralInfo={updateGeneralInfo}
+            />
 
-        <div className="toggle-section">
-          <h2
-            onClick={() => setEducationVisible(!isEducationVisible)} 
-            style={{ cursor: 'pointer' }}
-          >
-            {isEducationVisible ? 'Education' : 'Education'}
-          </h2>
-          {isEducationVisible && (
-            <Education educationList={educationList} updateEducationList={updateEducationList} />
-          )}
+            <div className="toggle-section">
+              <h2
+                onClick={() => setEducationVisible(!isEducationVisible)}
+                style={{ cursor: "pointer" }}
+              >
+                {isEducationVisible ? "Education" : "Education"}
+              </h2>
+              {isEducationVisible && (
+                <Education
+                  educationList={educationList}
+                  updateEducationList={updateEducationList}
+                />
+              )}
+            </div>
+
+            <div className="toggle-section">
+              <h2
+                onClick={() => setWorkVisible(!isWorkVisible)}
+                style={{ cursor: "pointer" }}
+              >
+                {isWorkVisible ? "Work Experience" : "Work Experience"}
+              </h2>
+              {isWorkVisible && (
+                <WorkExperience
+                  workList={workList}
+                  updateWorkList={updateWorkList}
+                />
+              )}
+            </div>
+          </div>
         </div>
 
-        <div className="toggle-section">
-          <h2
-            onClick={() => setWorkVisible(!isWorkVisible)} 
-            style={{ cursor: 'pointer' }}
-          >
-            {isWorkVisible ? 'Work Experience' : 'Work Experience'}
-          </h2>
-          {isWorkVisible && (
-            <WorkExperience workList={workList} updateWorkList={updateWorkList} />
-          )}
+        <div className="button-container">
+          <button onClick={downloadPDF} className="download-button">
+            Download as PDF
+          </button>
         </div>
       </div>
 
@@ -93,13 +230,13 @@ function CVPage() {
               {generalInfo.firstName} {generalInfo.lastName}
             </strong>
           </h2>
-          <p>
+          <p className="location-email-container">
             <strong>{generalInfo.location}</strong>
-          </p>
-          <p>
-            {generalInfo.email && <span>{generalInfo.email}</span>}
-            {generalInfo.email && generalInfo.phone && <span> • </span>}
-            {generalInfo.phone && <span>{generalInfo.phone}</span>}
+            <span className="contact-info">
+              {generalInfo.email && <span>{generalInfo.email}</span>}
+              {generalInfo.email && generalInfo.phone && <span> • </span>}
+              {generalInfo.phone && <span>{generalInfo.phone}</span>}
+            </span>
           </p>
           <p>{generalInfo.aboutYou}</p>
 

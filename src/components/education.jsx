@@ -4,7 +4,12 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function Education({ educationList, updateEducationList }) {
   const handleAddEducation = () => {
-    const newEducation = { titleOfStudy: "", schoolName: "", startDate: null, endDate: null };
+    const newEducation = {
+      titleOfStudy: "",
+      schoolName: "",
+      startDate: null,
+      endDate: null,
+    };
     updateEducationList([...educationList, newEducation]);
   };
 
@@ -27,7 +32,9 @@ function Education({ educationList, updateEducationList }) {
 
   return (
     <div className="form-container">
-      <button onClick={handleAddEducation}>Add Education</button>
+      <button className="button-container" onClick={handleAddEducation}>
+        Add Education
+      </button>
       {educationList.map((education, index) => (
         <div key={index} className="education-entry">
           <div className="form-field">
@@ -74,7 +81,12 @@ function Education({ educationList, updateEducationList }) {
             />
           </div>
 
-          <button className="delete-btn" onClick={() => handleDelete(index)}>Delete</button>
+          <button
+            className="button-container"
+            onClick={() => handleDelete(index)}
+          >
+            Delete
+          </button>
         </div>
       ))}
     </div>

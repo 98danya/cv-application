@@ -97,7 +97,8 @@ function GeneralInfo({ generalInfo, updateGeneralInfo }) {
         />
       </div>
 
-      <button type="button" onClick={clearAll}>
+      <button className="button-container" onClick={clearAll}>
+        {" "}
         Clear All
       </button>
     </div>
