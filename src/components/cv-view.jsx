@@ -176,9 +176,9 @@ function CVPage() {
   return (
     <div className="cv-page">
       <div className="left-section">
+      <h1 className="cv-heading">CV Generator</h1>
         <div className="form-container">
           <div className="form-section">
-            <h1 className="cv-heading">CV Generator</h1>
             <GeneralInfo
               generalInfo={generalInfo}
               updateGeneralInfo={updateGeneralInfo}
