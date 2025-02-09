@@ -84,12 +84,11 @@ function WorkExperience({ workList, updateWorkList }) {
 
           <div className="form-field">
             <label>Job Description</label>
-            <input
-              type="text"
+            <textarea
               name="jobDescription"
               value={work.jobDescription}
               placeholder="Describe Your Tasks"
-              onChange={(e) => handleChange(index, e)}
+              onChange={handleChange}
             />
           </div>
 
