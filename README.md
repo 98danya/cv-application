@@ -1,8 +1,17 @@
-# React + Vite
+# CV GENERATOR
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The Odin Project - React Course:
 
-Currently, two official plugins are available:
+A CV Application built with React that allows users to input and display their personal, educational, and professional information. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Preview
+
+<img width="1431" alt="preview-01" src="https://github.com/user-attachments/assets/4a5b87b4-16bd-45cf-b439-7f46279d01f7" />
+
+<img width="1433" alt="preview-02" src="https://github.com/user-attachments/assets/e5819bbb-30eb-4c44-863f-74e788c35a45" />
+
+## Links
+
+Live Link: https://splendorous-mermaid-b64483.netlify.app/
+
+Assignment: https://www.theodinproject.com/lessons/node-path-react-new-cv-application
